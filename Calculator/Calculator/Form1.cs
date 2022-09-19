@@ -25,10 +25,10 @@ namespace Calculator
 
 
         //declaring essential variables
-        public float numInput = 0; //1st number user inputs
-        public float numResult = 0; //result
-        public bool enteredValue = false; //to prevent user from spamming operators
-        public bool equalPressed = false; //whether equal key has been pressed
+        float numInput = 0; //1st number user inputs
+        float numResult = 0; //result
+        bool enteredValue = false; //to prevent user from spamming operators
+        bool equalPressed = false; //whether equal key has been pressed
 
         /* optr_str is a key component of this program
          as the first value the user inputs cannot be operated upon due to there being no 2nd value
@@ -38,8 +38,12 @@ namespace Calculator
          after the user inputs subsequent values the optr_str is set to actual operation value 
          and Num_calc performs the operation */
 
-        public string optr_str = "";
+        string optr_str = "";
 
+
+        /*calculation function
+        depandant on operator selected, if no operator is selected (first input)
+        it assigns input variable as first/result variable to perform operations on*/
 
         public float Nums_calc(string a)
         {
