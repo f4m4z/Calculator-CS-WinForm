@@ -28,7 +28,16 @@ namespace Calculator
         public float numInput = 0; //1st number user inputs
         public float numResult = 0; //result
         public bool enteredValue = false; //to prevent user from spamming operators
-        public bool equalPressed = false;
+        public bool equalPressed = false; //whether equal key has been pressed
+
+        /* optr_str is a key component of this program
+         as the first value the user inputs cannot be operated upon due to there being no 2nd value
+         optr_str stores/buffers what operation was supposed to be performed (Operator_Click's switch-case)
+         and ignores/queues the operation (Nums_cal's case "") while also moving the numInput variable to numResult
+         freeing up the input so user can input another value.
+         after the user inputs subsequent values the optr_str is set to actual operation value 
+         and Num_calc performs the operation */
+
         public string optr_str = "";
 
 
@@ -69,9 +78,13 @@ namespace Calculator
         public void Num_Click(object sender, EventArgs e)
         {
             Button digit = (Button)sender;
-            if (textBox_Input.Text == "0") textBox_Input.Clear();
+            if (textBox_Input.Text == "0") textBox_Input.Clear(); //so input doesnt have 0 at start
+
+            //clearing history after user pressed equal button
             if (equalPressed == true) textBox_History.Clear();
             equalPressed = false;
+
+            //user has actually input something, to prevent operator spamming
             enteredValue = true;
 
             switch (digit.Name)
@@ -115,21 +128,25 @@ namespace Calculator
         //operator buttons
         public void Operator_Click(object sender, EventArgs e)
         {
-            //extracting number from result textbox
+            Button optr = (Button)sender;
+
+            //clearing history after user pressed equal button
             if (equalPressed == true) textBox_History.Clear();
             equalPressed = false;
+
+            //extracting number from result textbox
             getInput();
             clearInput(1);
+            
+            //update the input number to history
+            textBox_History.AppendText(optr_str + numInput.ToString() + Environment.NewLine);
+
 
             //Determining what operator was pressed
-            Button optr = (Button)sender;
-            
-            textBox_History.AppendText(optr_str + numInput.ToString() + Environment.NewLine);
-            
-
-            if (enteredValue == true)
+            if (enteredValue == true) //the user has actually input a number, to prevent button spam
             {
-                Nums_calc(optr_str);
+                Nums_calc(optr_str); //actually does the operation
+                                     //if this is the first input,optr_str will be blank and thus numResult will be assigned to numInput
 
                 switch (optr.Name)
                 {
@@ -139,9 +156,10 @@ namespace Calculator
                     case "buttonDiv": optr_str = "(/) ";  break;
                 }
           
-                enteredValue = false;
+                enteredValue = false; //after pressing operation buttons the input is empty again
             }
 
+            //extras
             textBox_Sign.Clear();
             textBox_Sign.AppendText(optr_str);
 
@@ -159,17 +177,22 @@ namespace Calculator
             getInput();
             clearInput(1);
 
-            Nums_calc(optr_str);
+            Nums_calc(optr_str); //does the pending calculation, determines what type via the optr_str string previously set
 
 
             //updating history
-            textBox_History.AppendText(optr_str + numInput.ToString() + Environment.NewLine);
-            textBox_History.AppendText("Result : " + numResult.ToString() + Environment.NewLine);
+            if(equalPressed == false)
+            {
+                textBox_History.AppendText(optr_str + numInput.ToString() + Environment.NewLine);
+                textBox_History.AppendText("Result : " + numResult.ToString() + Environment.NewLine);
+            }
+            
 
+            //resetting all the variables
             numInput = 0;
             numResult = 0;
             equalPressed = true;
-            
+
             optr_str = "";
 
         }
